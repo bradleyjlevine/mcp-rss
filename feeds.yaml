@@ -1,0 +1,37 @@
+CyberSecurity:
+  - "https://krebsonsecurity.com/feed/"
+  - "https://www.cloudvulndb.org/rss/feed.xml"
+  - "https://www.schneier.com/feed/atom/"
+  - "https://www.darkreading.com/rss.xml"
+  - "https://www.blackhillsinfosec.com/blog/feed/"
+  - "https://feeds.feedburner.com/TheHackersNews"
+  - "https://www.securityweek.com/feed/"
+  - "https://www.wired.com/feed/rss"
+
+
+Developer:
+  - "https://feed.infoq.com/"
+  - "https://feed.infoq.com/architecture-design/"
+  - "https://feed.infoq.com/Security/"
+  - "https://feed.infoq.com/ai-ml-data-eng/news"
+  - "https://feed.infoq.com/Devops/"
+  - "https://feed.infoq.com/cloud-computing/"
+  - "https://stackoverflow.blog/feed/"
+  - "https://feeds.feedburner.com/GDBcode"
+  - "https://www.cloudcomputing-news.net/feed/"
+  - "https://aws.amazon.com/blogs/aws/feed/"
+  - "https://www.allthingsdistributed.com/atom.xml"
+  - "https://cloudblog.withgoogle.com/rss/"
+
+ServiceStatus:
+  - "https://status.anthropic.com/history.rss"
+  - "https://status.elastic.co/history.rss"
+  - "https://status.openai.com/"
+  - "https://www.cloudflarestatus.com/history.rss"
+
+ElasticBlogs:
+  - "https://www.elastic.co/search-labs/rss/feed"
+  - "https://www.elastic.co/security-labs/rss/feed.xml"
+
+Example:
+  - "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml"
