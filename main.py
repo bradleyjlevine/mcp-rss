@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 import feedparser
 import yaml
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import html
 import re
 import logging
@@ -68,13 +68,17 @@ def get_feeds_config() -> Dict:
     return _feeds_cache
 
 def parse_date(date_str: str) -> Optional[datetime]:
-    """Parse date string using multiple formats."""
+    """Parse date string using multiple formats, normalize to UTC."""
     if not date_str:
         return None
     
     for fmt in DATE_FORMATS:
         try:
-            return datetime.strptime(date_str, fmt)
+            dt = datetime.strptime(date_str, fmt)
+            # Convert to UTC if timezone-aware
+            if dt.tzinfo is not None:
+                dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+            return dt
         except ValueError:
             continue
     
@@ -83,7 +87,9 @@ def parse_date(date_str: str) -> Optional[datetime]:
         import time
         parsed = feedparser._parse_date(date_str)
         if parsed:
-            return datetime(*parsed[:6])
+            dt = datetime(*parsed[:6])
+            # feedparser returns UTC time tuples
+            return dt
     except:
         pass
     
@@ -96,6 +102,7 @@ def filter_entries_since(entries: List, since_dt: datetime, per_feed_limit: int)
         # Try multiple date fields
         published_parsed = getattr(entry, 'published_parsed', None)
         if published_parsed:
+            # feedparser returns UTC time tuples
             entry_dt = datetime(*published_parsed[:6])
         else:
             # Fallback to string parsing
@@ -106,7 +113,12 @@ def filter_entries_since(entries: List, since_dt: datetime, per_feed_limit: int)
             if not entry_dt:
                 continue
         
-        if entry_dt >= since_dt:
+        # Ensure since_dt is timezone-naive for comparison
+        compare_since = since_dt
+        if since_dt.tzinfo is not None:
+            compare_since = since_dt.astimezone(timezone.utc).replace(tzinfo=None)
+        
+        if entry_dt >= compare_since:
             filtered.append((entry, entry_dt))
     
     # Sort by date (newest first) and limit
@@ -237,8 +249,9 @@ async def fetch_feeds_impl(category: str = "Example", limit: int = 20, per_feed_
             logging.error(f"Feed fetch exception: {result}")
     
     # Sort by published date (newest first), handling None dates
+    # Use timezone-naive datetime.min for consistent comparison
     all_articles.sort(
-        key=lambda x: x.get('published_dt') or datetime.min, 
+        key=lambda x: x.get('published_dt') or datetime.min.replace(tzinfo=None), 
         reverse=True
     )
     
