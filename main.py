@@ -26,6 +26,8 @@ DATE_FORMATS = [
     '%Y-%m-%d',                      # Date only
 ]
 
+# Convert a list of article dictionaries to a markdown-formatted string
+# Each article is displayed as a bulleted list item with title, link, published date, and summary preview
 def articles_to_markdown(articles):
     if not articles:
         return "No recent articles found."
@@ -35,6 +37,9 @@ def articles_to_markdown(articles):
         lines.append(line)
     return "\n".join(lines)
 
+# Clean and sanitize HTML content from RSS feed summaries
+# Removes HTML tags, unescapes entities, and handles encoding issues
+# Uses regex for simple cases and BeautifulSoup for complex HTML
 def clean_summary(summary: str) -> str:
     if not summary:
         return ""
@@ -95,6 +100,9 @@ def parse_date(date_str: str) -> Optional[datetime]:
     
     return None
 
+# Filter RSS feed entries to only include those published after a given datetime
+# Handles multiple date field formats and timezone conversion
+# Returns entries sorted by date (newest first) and limited per feed
 def filter_entries_since(entries: List, since_dt: datetime, per_feed_limit: int) -> List:
     """Filter and sort entries by date, respecting per-feed limit."""
     filtered = []
@@ -138,6 +146,9 @@ async def get_session() -> aiohttp.ClientSession:
         )
     return _session
 
+# Asynchronously fetch and parse a single RSS feed URL
+# Handles HTTP errors, feed parsing warnings, and date filtering
+# Returns a list of article dictionaries with cleaned summaries
 async def fetch_single_feed(session: aiohttp.ClientSession, url: str, since_dt: datetime, per_feed_limit: int) -> List[Dict]:
     """Fetch and parse a single RSS feed."""
     try:
@@ -212,9 +223,14 @@ async def fetch_single_feed(session: aiohttp.ClientSession, url: str, since_dt: 
         "required": ["markdown", "articles"]
     }
 )
+# MCP tool wrapper function that validates parameters and calls the implementation
+# Provides the external interface for fetching RSS feeds by category
 async def fetch_feeds(category: str = "Example", limit: int = 20, per_feed_limit: int = 5, since_date: str = None) -> dict:
     return await fetch_feeds_impl(category, limit, per_feed_limit, since_date)
 
+# Main implementation for fetching RSS feeds from a specified category
+# Fetches multiple feeds concurrently, combines and sorts articles by date
+# Returns both markdown summary and structured article data
 async def fetch_feeds_impl(category: str = "Example", limit: int = 20, per_feed_limit: int = 5, since_date: str = None) -> dict:
     # Handle since_date parameter (YYYY-mm-dd); default is 7 days ago
     if since_date is None:
@@ -267,6 +283,8 @@ async def fetch_feeds_impl(category: str = "Example", limit: int = 20, per_feed_
 
 
 
+# Cleanup function to properly close aiohttp session on application shutdown
+# Prevents resource leaks and ensures graceful termination
 async def cleanup():
     """Cleanup resources on shutdown."""
     global _session
@@ -277,6 +295,8 @@ if __name__ == "__main__":
     import atexit
     
     # Register cleanup
+    # Synchronous wrapper for cleanup function to work with atexit.register
+    # Creates new event loop to run async cleanup when program exits
     def sync_cleanup():
         if _session and not _session.closed:
             loop = asyncio.new_event_loop()
