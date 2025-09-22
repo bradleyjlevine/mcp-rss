@@ -7,9 +7,6 @@ CyberSecurity:
   - "https://feeds.feedburner.com/TheHackersNews"
   - "https://www.securityweek.com/feed/"
   - "https://www.wired.com/feed/rss"
-  - "https://www.cisa.gov/news.xml"
-  - "https://www.cisa.gov/cybersecurity-advisories/all.xml"
-
 
 Developer:
   - "https://feed.infoq.com/"
