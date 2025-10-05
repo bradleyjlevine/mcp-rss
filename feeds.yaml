@@ -7,6 +7,11 @@ CyberSecurity:
   - "https://feeds.feedburner.com/TheHackersNews"
   - "https://www.securityweek.com/feed/"
   - "https://www.wired.com/feed/rss"
+  - "https://www.cisa.gov/cybersecurity-advisories/all.xml"
+  - "https://www.kb.cert.org/vulfeed/"
+  - "https://www.csoonline.com/feed/"
+  - "https://unit42.paloaltonetworks.com/feed/"
+  - "https://feeds.feedburner.com/feedburner/Talos"
 
 Developer:
   - "https://feed.infoq.com/"
