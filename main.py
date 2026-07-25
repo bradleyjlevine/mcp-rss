@@ -221,7 +221,8 @@ async def fetch_single_feed(session: aiohttp.ClientSession, url: str, since_dt: 
             }
         },
         "required": ["markdown", "articles"]
-    }
+    },
+    annotations={"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
 )
 # MCP tool wrapper function that validates parameters and calls the implementation
 # Provides the external interface for fetching RSS feeds by category
