@@ -294,7 +294,26 @@ async def cleanup():
 
 if __name__ == "__main__":
     import atexit
-    
+    import argparse
+
+    # Configure command-line argument parser
+    parser = argparse.ArgumentParser(description='RSS MCP Server')
+    parser.add_argument('--transport',
+                       choices=['stdio', 'streamable-http'],
+                       default='stdio',
+                       help='Transport mechanism to use (stdio or streamable-http)')
+    parser.add_argument('--host',
+                       default='127.0.0.1',
+                       help='Host address for HTTP transport (default: 127.0.0.1)')
+    parser.add_argument('--port',
+                       type=int,
+                       default=8000,
+                       help='Port for HTTP transport (default: 8000)')
+    parser.add_argument('--path',
+                       default='/mcp',
+                       help='URL path for HTTP transport (default: /mcp)')
+    args = parser.parse_args()
+
     # Register cleanup
     # Synchronous wrapper for cleanup function to work with atexit.register
     # Creates new event loop to run async cleanup when program exits
@@ -304,6 +323,16 @@ if __name__ == "__main__":
             asyncio.set_event_loop(loop)
             loop.run_until_complete(_session.close())
             loop.close()
-    
+
     atexit.register(sync_cleanup)
-    mcp.run(transport="stdio")
+
+    # Run with the selected transport
+    if args.transport == 'stdio':
+        mcp.run(transport="stdio")
+    else:
+        mcp.run(
+            transport="streamable-http",
+            host=args.host,
+            port=args.port,
+            path=args.path
+        )

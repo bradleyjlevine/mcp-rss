@@ -11,6 +11,7 @@ An MCP (Model Context Protocol) server that fetches and processes RSS feeds, ret
 - **Robust Date Parsing**: Handles multiple date formats (RFC 822, ISO 8601, etc.)
 - **Rate Limiting**: Built-in connection limits and timeouts for reliable fetching
 - **Caching**: In-memory configuration caching for better performance
+- **Multiple Transport Options**: Support for both stdio and HTTP transport mechanisms
 
 ## Tool Functions
 
@@ -102,6 +103,9 @@ cp feeds.yaml.example feeds.yaml
 uv run main.py
 # Or with python
 python main.py
+
+# Run with HTTP transport instead of stdio (default)
+python main.py --transport streamable-http --host 127.0.0.1 --port 8000 --path /mcp
 ```
 
 ### Docker Deployment
@@ -109,8 +113,11 @@ python main.py
 # Build the Docker image
 docker build -t rss-mcp-server .
 
-# Run the container
+# Run the container with default stdio transport
 docker run -v $(pwd)/feeds.yaml:/app/feeds.yaml rss-mcp-server
+
+# Run with HTTP transport
+docker run -v $(pwd)/feeds.yaml:/app/feeds.yaml rss-mcp-server --transport streamable-http --host 0.0.0.0 --port 8000 --path /mcp
 ```
 
 ## Dependencies
@@ -120,6 +127,15 @@ docker run -v $(pwd)/feeds.yaml:/app/feeds.yaml rss-mcp-server
 - **fastmcp**: MCP server framework
 - **pyyaml**: YAML configuration parsing
 - **beautifulsoup4**: HTML content cleaning
+
+## Command-Line Arguments
+
+The server can be configured with the following command-line arguments:
+
+- `--transport`: Transport mechanism to use (`stdio` or `streamable-http`, default: `stdio`)
+- `--host`: Host address for HTTP transport (default: `127.0.0.1`)
+- `--port`: Port for HTTP transport (default: `8000`)
+- `--path`: URL path for HTTP transport (default: `/mcp`)
 
 ## Usage Examples
 
